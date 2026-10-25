@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist | ShopEase</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { min-height: 100vh; background: #f7f7fc; color: #25243a; font-family: 'Poppins', sans-serif; }
+        .wishlist-page { width: min(100% - 36px, 1200px); margin: 38px auto 60px; }
+        .wishlist-heading { margin-bottom: 22px; }
+        .wishlist-heading span { color: #704cf5; font-size: 10px; font-weight: 700; letter-spacing: 1.3px; }
+        .wishlist-heading h1 { margin: 6px 0; font-size: clamp(26px, 4vw, 34px); }
+        .wishlist-heading p { color: #85859b; font-size: 12px; }
+        .wishlist-message { margin-bottom: 14px; padding: 11px 14px; border-radius: 9px; color: #176b42; background: #e8f8ef; font-size: 12px; }
+        .wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+        .wishlist-card { overflow: hidden; border: 1px solid #ececf4; border-radius: 15px; background: #fff; }
+        .wishlist-image { height: 190px; display: grid; place-items: center; overflow: hidden; background: #f0eff8; }
+        .wishlist-image img { width: 100%; height: 100%; object-fit: cover; }
+        .wishlist-placeholder { font-size: 52px; }
+        .wishlist-info { padding: 15px; }
+        .wishlist-category { color: #704cf5; font-size: 9px; font-weight: 700; text-transform: uppercase; }
+        .wishlist-info h2 { margin: 6px 0 5px; font-size: 14px; }
+        .wishlist-info h2 a { color: inherit; text-decoration: none; }
+        .wishlist-price { margin-bottom: 14px; font-size: 16px; font-weight: 700; }
+        .wishlist-actions { display: flex; gap: 8px; }
+        .wishlist-actions form { flex: 1; }
+        .wishlist-actions button { display: inline-flex; justify-content: center; align-items: center; width: 100%; min-height: 38px; padding: 0 8px; border: 0; border-radius: 8px; font: inherit; font-size: 10px; font-weight: 600; cursor: pointer; }
+        .wishlist-actions .add-cart { color: #fff; background: #704cf5; }
+        .wishlist-actions .remove { color: #b52f46; background: #fff0f2; }
+        .wishlist-actions button:disabled { color: #85859b; background: #f0f0f4; cursor: not-allowed; }
+        .wishlist-empty { padding: 48px 20px; text-align: center; border: 1px solid #ececf4; border-radius: 15px; background: #fff; }
+        .wishlist-empty span { font-size: 42px; }
+        .wishlist-empty h2 { margin: 10px 0 6px; }
+        .wishlist-empty p { margin-bottom: 18px; color: #85859b; font-size: 12px; }
+        .wishlist-empty a { display: inline-flex; padding: 12px 18px; border-radius: 9px; color: #fff; background: #704cf5; font-size: 11px; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    {% include "home.html" %}
+    <main class="wishlist-page">
+        <header class="wishlist-heading">
+            <span>YOUR SAVED PICKS</span>
+            <h1>My wishlist</h1>
+            <p>{{ wishlist_items|length }} saved product{{ wishlist_items|length|pluralize }}</p>
+        </header>
+        {% for message in messages %}
+        <div class="wishlist-message" role="status">{{ message }}</div>
+        {% endfor %}
+
+        {% if wishlist_items %}
+        <section class="wishlist-grid" aria-label="Wishlist products">
+            {% for item in wishlist_items %}
+            <article class="wishlist-card">
+                <a class="wishlist-image" href="{% url 'product_detail' item.product.pk %}">
+                    {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" loading="lazy">
+                    {% else %}
+                    <span class="wishlist-placeholder" aria-hidden="true">🛍️</span>
+                    {% endif %}
+                </a>
+                <div class="wishlist-info">
+                    <span class="wishlist-category">{{ item.product.category.name }}</span>
+                    <h2><a href="{% url 'product_detail' item.product.pk %}">{{ item.product.name }}</a></h2>
+                    <p class="wishlist-price">₹{{ item.product.price }}</p>
+                    <div class="wishlist-actions">
+                        <form method="post" action="{% url 'add_to_cart' item.product.pk %}">
+                            {% csrf_token %}
+                            <button class="add-cart" type="submit" {% if item.product.stock == 0 %}disabled{% endif %}>Add to cart</button>
+                        </form>
+                        <form method="post" action="{% url 'remove_wishlist_item' item.pk %}">
+                            {% csrf_token %}
+                            <button class="remove" type="submit">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </section>
+        {% else %}
+        <section class="wishlist-empty">
+            <span aria-hidden="true">♡</span>
+            <h2>Your wishlist is empty</h2>
+            <p>Save products here to find them again later.</p>
+            <a href="{% url 'dashboard' %}">Explore products</a>
+        </section>
+        {% endif %}
+    </main>
+</body>
+</html>

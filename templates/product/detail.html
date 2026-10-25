@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} | ShopEase</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { min-height: 100vh; background: #f7f7fc; color: #25243a; font-family: 'Poppins', sans-serif; }
+        .detail-page { width: min(100% - 36px, 1280px); margin: 32px auto 60px; }
+        .breadcrumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; color: #85859b; font-size: 11px; }
+        .breadcrumbs a { color: #704cf5; text-decoration: none; }
+        .detail-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: clamp(24px, 5vw, 64px); padding: clamp(20px, 5vw, 48px); background: #fff; border: 1px solid #ececf4; border-radius: 22px; box-shadow: 0 12px 35px rgba(37, 36, 58, .05); }
+        .detail-image { min-height: 360px; overflow: hidden; display: grid; place-items: center; border-radius: 17px; background: #f0eff8; }
+        .detail-image img { width: 100%; height: 100%; max-height: 520px; object-fit: contain; }
+        .detail-placeholder { font-size: 90px; }
+        .detail-info { align-self: center; }
+        .detail-category, .related-heading span { color: #704cf5; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+        .detail-info h1 { margin: 12px 0; font-size: clamp(28px, 4vw, 42px); line-height: 1.2; overflow-wrap: anywhere; }
+        .detail-description { margin: 18px 0; color: #737287; font-size: 13px; line-height: 1.8; white-space: pre-line; }
+        .detail-price { margin: 22px 0 8px; color: #25243a; font-size: 30px; font-weight: 700; }
+        .detail-stock { color: #85859b; font-size: 11px; }
+        .detail-stock.out { color: #b52f46; }
+        .detail-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+        .detail-actions form { flex: 1 1 170px; }
+        .detail-action { width: 100%; min-height: 46px; display: inline-flex; align-items: center; justify-content: center; padding: 0 18px; border: 0; border-radius: 10px; color: #fff; background: #704cf5; font: inherit; font-size: 12px; font-weight: 600; text-decoration: none; cursor: pointer; transition: .2s; }
+        .detail-action:hover:not(:disabled) { background: #5432d5; transform: translateY(-1px); }
+        .detail-action.secondary { color: #704cf5; background: #f0edff; }
+        .detail-action.secondary:hover { background: #e7e1ff; }
+        .detail-action:disabled { color: #85859b; background: #f0f0f4; cursor: not-allowed; }
+        .detail-message { margin-bottom: 14px; padding: 11px 14px; border-radius: 9px; color: #176b42; background: #e8f8ef; font-size: 12px; }
+        .related-section { margin-top: 48px; }
+        .related-heading { margin-bottom: 18px; }
+        .related-heading span { letter-spacing: 1.3px; }
+        .related-heading h2 { margin-top: 6px; font-size: clamp(22px, 3vw, 29px); }
+        .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; }
+        .related-card { overflow: hidden; border: 1px solid #ececf4; border-radius: 15px; background: #fff; }
+        .related-image { height: 180px; display: grid; place-items: center; overflow: hidden; background: #f0eff8; }
+        .related-image img { width: 100%; height: 100%; object-fit: cover; }
+        .related-placeholder { font-size: 48px; }
+        .related-info { padding: 15px; }
+        .related-info span { color: #704cf5; font-size: 9px; font-weight: 700; text-transform: uppercase; }
+        .related-info h3 { margin: 5px 0 12px; font-size: 13px; overflow-wrap: anywhere; }
+        .related-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .related-bottom strong { font-size: 14px; }
+        .related-bottom a { padding: 8px 10px; border-radius: 8px; color: #704cf5; background: #f0edff; font-size: 10px; font-weight: 600; text-decoration: none; }
+        .related-empty { padding: 24px; color: #85859b; background: #fff; border: 1px solid #ececf4; border-radius: 12px; font-size: 12px; }
+        @media (max-width: 760px) {
+            .detail-card { grid-template-columns: 1fr; gap: 25px; }
+            .detail-image { min-height: 250px; max-height: 380px; }
+            .related-grid { grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+    {% include "home.html" %}
+    <main class="detail-page">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <a href="{% url 'dashboard' %}">Store</a>
+            <span>/</span>
+            <a href="{% url 'dashboard' %}?category={{ product.category.name|urlencode }}#products">{{ product.category.name }}</a>
+            <span>/</span>
+            <span>{{ product.name }}</span>
+        </nav>
+
+        {% for message in messages %}
+        <div class="detail-message" role="status">{{ message }}</div>
+        {% endfor %}
+
+        <section class="detail-card">
+            <div class="detail-image">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                <div class="detail-placeholder" aria-hidden="true">🛍️</div>
+                {% endif %}
+            </div>
+            <div class="detail-info">
+                <span class="detail-category">{{ product.category.name }}</span>
+                <h1>{{ product.name }}</h1>
+                <p class="detail-description">{% if product.description %}{{ product.description }}{% else %}Discover this item from our {{ product.category.name }} collection.{% endif %}</p>
+                <div class="detail-price">₹{{ product.price }}</div>
+                {% if product.stock > 0 %}
+                <p class="detail-stock">{{ product.stock }} in stock</p>
+                {% else %}
+                <p class="detail-stock out">Currently out of stock</p>
+                {% endif %}
+
+                <div class="detail-actions">
+                    {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'add_to_cart' product.pk %}">
+                        {% csrf_token %}
+                        <button class="detail-action" type="submit" {% if product.stock == 0 %}disabled{% endif %}>Add to cart</button>
+                    </form>
+                    <form method="post" action="{% url 'add_to_wishlist' product.pk %}">
+                        {% csrf_token %}
+                        <button class="detail-action secondary" type="submit">{% if is_in_wishlist %}Saved to wishlist{% else %}♡ Add to wishlist{% endif %}</button>
+                    </form>
+                    {% else %}
+                    <a class="detail-action" href="{% url 'login' %}?next={{ request.path|urlencode }}">Login to add to cart</a>
+                    <a class="detail-action secondary" href="{% url 'login' %}?next={{ request.path|urlencode }}">♡ Login to save</a>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <section class="related-section" aria-labelledby="related-title">
+            <div class="related-heading">
+                <span>MORE TO EXPLORE</span>
+                <h2 id="related-title">More from {{ product.category.name }}</h2>
+            </div>
+            <div class="related-grid">
+                {% for related in related_products %}
+                <article class="related-card">
+                    <a href="{% url 'product_detail' related.pk %}" class="related-image">
+                        {% if related.image %}
+                        <img src="{{ related.image.url }}" alt="{{ related.name }}" loading="lazy">
+                        {% else %}
+                        <span class="related-placeholder" aria-hidden="true">🛍️</span>
+                        {% endif %}
+                    </a>
+                    <div class="related-info">
+                        <span>{{ related.category.name }}</span>
+                        <h3>{{ related.name }}</h3>
+                        <div class="related-bottom">
+                            <strong>₹{{ related.price }}</strong>
+                            <a href="{% url 'product_detail' related.pk %}">View product</a>
+                        </div>
+                    </div>
+                </article>
+                {% empty %}
+                <p class="related-empty">There are no other products in this category yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>

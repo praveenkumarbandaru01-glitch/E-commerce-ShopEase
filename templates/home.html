@@ -1,0 +1,693 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ShopEase | Better Products, Better Life</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        /* General */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Navbar */
+        .main-navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e9edf3;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: auto;
+            min-height: 82px;
+            padding: 14px 35px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 28px;
+        }
+
+        /* Logo */
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            background: #635bff;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            font-size: 25px;
+            box-shadow: 0 5px 14px rgba(99, 91, 255, 0.2);
+        }
+
+        .brand-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-size: 25px;
+            font-weight: 800;
+            color: #172033;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .brand-name span {
+            color: #635bff;
+        }
+
+        .brand-tagline {
+            color: #8b93a7;
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        /* Navigation links */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 27px;
+        }
+
+        .nav-links a {
+            font-size: 13px;
+            font-weight: 500;
+            color: #596174;
+            transition: 0.25s;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            color: #635bff;
+        }
+
+        /* Search */
+        .nav-search {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            max-width: 350px;
+            height: 44px;
+            background: #f4f5fa;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 0 7px 0 15px;
+            transition: 0.25s;
+        }
+
+        .nav-search:focus-within {
+            background: white;
+            border-color: #635bff;
+            box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.08);
+        }
+
+        .nav-search input {
+            width: 100%;
+            min-width: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 12px;
+            color: #172033;
+        }
+
+        .nav-search input::placeholder {
+            color: #969db0;
+        }
+
+        .nav-search button {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 9px;
+            background: #635bff;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* Right-side actions */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .action-icon {
+            width: 42px;
+            height: 42px;
+            border: 1px solid #edf0f5;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #414a60;
+            background: white;
+            transition: 0.25s;
+        }
+
+        .action-icon:hover {
+            color: #635bff;
+            border-color: #d9d5ff;
+            background: #f7f6ff;
+            transform: translateY(-2px);
+        }
+
+        /* Login and signup */
+        .nav-btn {
+            padding: 11px 18px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: 0.25s;
+            white-space: nowrap;
+        }
+
+        .login-btn {
+            color: #30384c;
+            border: 1px solid #e5e7ef;
+            background: white;
+        }
+
+        .login-btn:hover {
+            border-color: #635bff;
+            color: #635bff;
+        }
+
+        .signup-btn {
+            background: #635bff;
+            color: white;
+            box-shadow: 0 4px 10px rgba(99, 91, 255, 0.18);
+        }
+
+        .signup-btn:hover {
+            background: #5046e5;
+            transform: translateY(-2px);
+        }
+
+        /* Profile dropdown */
+        .profile-menu {
+            position: relative;
+        }
+
+        .profile-toggle {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            background: white;
+            border: 1px solid #edf0f5;
+            border-radius: 12px;
+            padding: 6px 10px 6px 6px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e9e7ff;
+            color: #635bff;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .profile-greeting {
+            color: #969db0;
+            font-size: 10px;
+        }
+
+        .profile-username {
+            color: #172033;
+            font-size: 12px;
+            font-weight: 600;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .profile-arrow {
+            color: #8b93a7;
+            margin-left: 4px;
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            width: 230px;
+            background: white;
+            border: 1px solid #edf0f5;
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow: 0 15px 40px rgba(20, 30, 60, 0.12);
+        }
+
+        .profile-menu.open .profile-dropdown {
+            display: block;
+            animation: dropdownIn 0.2s ease;
+        }
+
+        @keyframes dropdownIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-heading {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            color: #8b93a7;
+            font-size: 11px;
+            border-bottom: 1px solid #edf0f5;
+            margin-bottom: 6px;
+        }
+
+        .dropdown-heading strong {
+            color: #172033;
+            font-size: 14px;
+        }
+
+        .profile-dropdown > a,
+        .logout-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 11px 12px;
+            border: none;
+            border-radius: 9px;
+            color: #596174;
+            background: transparent;
+            font-family: inherit;
+            font-size: 12px;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .profile-dropdown > a:hover {
+            background: #f5f4ff;
+            color: #635bff;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #edf0f5;
+            margin: 6px 0;
+        }
+
+        .logout-button {
+            color: #e5484d;
+        }
+
+        .logout-button:hover {
+            background: #fff1f1;
+        }
+
+        /* Mobile menu button */
+        .menu-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 1px solid #edf0f5;
+            background: white;
+            color: #172033;
+            border-radius: 10px;
+            font-size: 21px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 1150px) {
+            .nav-container {
+                gap: 18px;
+                padding: 14px 22px;
+            }
+
+            .nav-links {
+                gap: 16px;
+            }
+
+            .brand-name {
+                font-size: 22px;
+            }
+
+            .nav-search {
+                max-width: 260px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .nav-container {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .menu-toggle {
+                display: block;
+                margin-left: auto;
+            }
+
+            .nav-actions {
+                gap: 7px;
+            }
+
+            .nav-links,
+            .nav-search {
+                display: none;
+                width: 100%;
+                max-width: none;
+                flex-basis: 100%;
+            }
+
+            .nav-links.show {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                order: 5;
+                padding: 8px 0;
+            }
+
+            .nav-links.show a {
+                padding: 12px;
+                border-radius: 8px;
+            }
+
+            .nav-links.show a:hover {
+                background: #f5f4ff;
+            }
+
+            .nav-search.show {
+                display: flex;
+                order: 6;
+                margin-bottom: 5px;
+            }
+
+            .nav-actions {
+                order: 4;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 12px 14px;
+                gap: 10px;
+            }
+
+            .brand-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 21px;
+                border-radius: 12px;
+            }
+
+            .brand-name {
+                font-size: 20px;
+            }
+
+            .brand-tagline {
+                font-size: 9px;
+            }
+
+            .nav-btn {
+                padding: 9px 11px;
+                font-size: 11px;
+            }
+
+            .profile-info,
+            .profile-arrow {
+                display: none;
+            }
+
+            .profile-toggle {
+                padding: 4px;
+            }
+
+            .profile-avatar {
+                width: 34px;
+                height: 34px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="main-navbar">
+    <div class="nav-container">
+
+        <!-- Brand -->
+        <a href="{% url 'home' %}" class="brand-logo">
+            <span class="brand-icon">🛍</span>
+
+            <span class="brand-details">
+                <span class="brand-name">
+                    Shop<span>Ease</span>
+                </span>
+
+                <span class="brand-tagline">
+                    Better Products, Better Life
+                </span>
+            </span>
+        </a>
+
+        <!-- Mobile menu -->
+        <button
+            type="button"
+            class="menu-toggle"
+            id="menuToggle"
+            aria-label="Toggle navigation"
+            aria-expanded="false"
+            aria-controls="navLinks"
+        >
+            ☰
+        </button>
+
+        <!-- Navigation links -->
+        <div class="nav-links" id="navLinks">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'home' %}#products">Products</a>
+            <a href="{% url 'home' %}#categories">Categories</a>
+        </div>
+
+        <!-- Search -->
+        <form
+            class="nav-search"
+            id="navSearch"
+            action="{% url 'home' %}"
+            method="GET"
+        >
+            <input
+                type="search"
+                name="q"
+                placeholder="Search for products..."
+                value="{{ search_query|default:'' }}"
+                aria-label="Search products"
+            >
+
+            <button type="submit" aria-label="Search">⌕</button>
+        </form>
+
+        <!-- Actions -->
+        <div class="nav-actions">
+
+            {% if request.user.is_authenticated %}
+
+                <div class="profile-menu" id="profileMenu">
+
+                    <button
+                        type="button"
+                        class="profile-toggle"
+                        id="profileToggle"
+                        aria-expanded="false"
+                        aria-controls="profileDropdown"
+                    >
+                        <span class="profile-avatar">
+                            {{ request.user.username|first|upper }}
+                        </span>
+
+                        <span class="profile-info">
+                            <span class="profile-greeting">Welcome back</span>
+                            <span class="profile-username">
+                                {{ request.user.username }}
+                            </span>
+                        </span>
+
+                        <span class="profile-arrow">⌄</span>
+                    </button>
+
+                    <div class="profile-dropdown" id="profileDropdown">
+
+                        <div class="dropdown-heading">
+                            <strong>{{ request.user.username }}</strong>
+                            Manage your account
+                        </div>
+
+                        <a href="{% url 'profile' %}">
+                            <span>♙</span> My Profile
+                        </a>
+
+                        <a href="{% url 'cart' %}">
+                            <span>🛒</span> My Cart
+                        </a>
+
+                        <a href="{% url 'order_history' %}">
+                            <span>▤</span> My Orders
+                        </a>
+
+                        <a href="{% url 'wishlist' %}">
+                            <span>♡</span> Wishlist
+                        </a>
+
+                        <div class="dropdown-divider"></div>
+
+                        <form method="POST" action="{% url 'logout' %}">
+                            {% csrf_token %}
+
+                            <button type="submit" class="logout-button">
+                                <span>⇥</span> Logout
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+
+            {% else %}
+
+                <a href="{% url 'login' %}" class="nav-btn login-btn">
+                    Login
+                </a>
+
+                <a href="{% url 'signup' %}" class="nav-btn signup-btn">
+                    Sign Up
+                </a>
+
+            {% endif %}
+
+        </div>
+    </div>
+</nav>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const menuToggle = document.getElementById("menuToggle");
+        const navLinks = document.getElementById("navLinks");
+        const navSearch = document.getElementById("navSearch");
+
+        const profileMenu = document.getElementById("profileMenu");
+        const profileToggle = document.getElementById("profileToggle");
+
+        // Mobile navigation
+        menuToggle.addEventListener("click", function () {
+
+            const isOpen = navLinks.classList.toggle("show");
+
+            navSearch.classList.toggle("show", isOpen);
+
+            menuToggle.textContent = isOpen ? "✕" : "☰";
+
+            menuToggle.setAttribute("aria-expanded", isOpen);
+        });
+
+        // Close mobile menu after clicking a link
+        navLinks.querySelectorAll("a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                navLinks.classList.remove("show");
+                navSearch.classList.remove("show");
+
+                menuToggle.textContent = "☰";
+                menuToggle.setAttribute("aria-expanded", "false");
+            });
+        });
+
+        // Profile dropdown
+        if (profileMenu && profileToggle) {
+
+            profileToggle.addEventListener("click", function (event) {
+                event.stopPropagation();
+
+                const isOpen = profileMenu.classList.toggle("open");
+
+                profileToggle.setAttribute("aria-expanded", isOpen);
+            });
+
+            document.addEventListener("click", function (event) {
+
+                if (!profileMenu.contains(event.target)) {
+                    profileMenu.classList.remove("open");
+
+                    profileToggle.setAttribute("aria-expanded", "false");
+                }
+            });
+
+            document.addEventListener("keydown", function (event) {
+
+                if (event.key === "Escape") {
+                    profileMenu.classList.remove("open");
+
+                    profileToggle.setAttribute("aria-expanded", "false");
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

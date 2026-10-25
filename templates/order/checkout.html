@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | ShopEase</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { min-height: 100vh; background: #f7f7fc; color: #25243a; font-family: 'Poppins', sans-serif; }
+        .checkout-page { width: min(100% - 36px, 1050px); margin: 38px auto 60px; }
+        .checkout-heading { margin-bottom: 22px; }
+        .checkout-heading span { color: #704cf5; font-size: 10px; font-weight: 700; letter-spacing: 1.3px; }
+        .checkout-heading h1 { margin: 6px 0; font-size: clamp(26px, 4vw, 34px); }
+        .checkout-heading p { color: #85859b; font-size: 12px; }
+        .checkout-message { margin-bottom: 14px; padding: 11px 14px; border-radius: 9px; color: #a5263b; background: #fff0f2; font-size: 12px; }
+        .checkout-layout { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 20px; align-items: start; }
+        .checkout-card, .checkout-summary { padding: clamp(20px, 4vw, 30px); border: 1px solid #ececf4; border-radius: 15px; background: #fff; }
+        .checkout-card h2, .checkout-summary h2 { margin-bottom: 18px; font-size: 16px; }
+        .address-label { display: block; margin-bottom: 7px; color: #4c4961; font-size: 11px; font-weight: 600; }
+        .address-input { width: 100%; min-height: 120px; padding: 12px 13px; border: 1px solid #e5e3ee; border-radius: 9px; color: #25243a; background: #fbfbfe; font: inherit; font-size: 12px; resize: vertical; }
+        .address-input:focus { outline: 3px solid rgba(112, 76, 245, .12); border-color: #a48dff; }
+        .payment-option { display: flex; align-items: flex-start; gap: 12px; padding: 15px; border: 1px solid #d9d0ff; border-radius: 11px; background: #f8f6ff; }
+        .payment-option input { margin-top: 4px; accent-color: #704cf5; }
+        .payment-option strong { display: block; font-size: 12px; }
+        .payment-option span { display: block; margin-top: 3px; color: #85859b; font-size: 10px; line-height: 1.6; }
+        .checkout-submit { width: 100%; min-height: 46px; margin-top: 20px; border: 0; border-radius: 9px; color: #fff; background: #704cf5; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .checkout-submit:hover { background: #5432d5; }
+        .summary-item { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0eff5; font-size: 11px; }
+        .summary-item span { color: #737287; }
+        .summary-total { display: flex; justify-content: space-between; padding-top: 16px; font-size: 14px; font-weight: 700; }
+        .checkout-back { display: inline-flex; margin-top: 16px; color: #704cf5; font-size: 11px; font-weight: 600; text-decoration: none; }
+        @media (max-width: 760px) { .checkout-layout { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    {% include "home.html" %}
+    <main class="checkout-page">
+        <header class="checkout-heading">
+            <span>ONE LAST STEP</span>
+            <h1>Checkout</h1>
+            <p>Confirm your delivery address and payment method.</p>
+        </header>
+
+        {% for message in messages %}
+        <div class="checkout-message" role="alert">{{ message }}</div>
+        {% endfor %}
+
+        <form method="post" class="checkout-layout">
+            {% csrf_token %}
+            <section class="checkout-card">
+                <h2>Delivery details</h2>
+                <label class="address-label" for="shipping-address">Full delivery address</label>
+                <textarea class="address-input" id="shipping-address" name="shipping_address" required maxlength="2000" placeholder="House/building, street, area, city, state, postal code">{{ shipping_address }}</textarea>
+
+                <h2 style="margin-top: 26px;">Payment method</h2>
+                <label class="payment-option">
+                    <input type="radio" name="payment_method" value="cod" checked>
+                    <span>
+                        <strong>Cash on delivery</strong>
+                        Pay in cash when your order arrives. No online payment will be taken now.
+                    </span>
+                </label>
+
+                <button class="checkout-submit" type="submit">Place order · ₹{{ total }}</button>
+                <a class="checkout-back" href="{% url 'cart' %}">← Back to cart</a>
+            </section>
+
+            <aside class="checkout-summary">
+                <h2>Order summary</h2>
+                {% for item in cart_items %}
+                <div class="summary-item">
+                    <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                    <strong>₹{{ item.line_total }}</strong>
+                </div>
+                {% endfor %}
+                <div class="summary-total"><span>Total due on delivery</span><strong>₹{{ total }}</strong></div>
+            </aside>
+        </form>
+    </main>
+</body>
+</html>

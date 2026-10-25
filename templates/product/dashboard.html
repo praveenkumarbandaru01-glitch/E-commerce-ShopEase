@@ -1,0 +1,816 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopEase | Shopping Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #704cf5;
+    --primary-dark: #5432d5;
+    --text: #25243a;
+    --muted: #85859b;
+    --bg: #f7f7fc;
+    --white: #fff;
+    --border: #ececf4;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 25px;
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+button, input, a {
+    font-family: inherit;
+}
+
+a {
+    text-decoration: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+.dashboard {
+    max-width: 1600px;
+    margin: auto;
+    padding: 28px clamp(14px, 4vw, 55px);
+}
+
+/* Welcome banner */
+
+.hero {
+    min-height: 350px;
+    padding: clamp(25px, 5vw, 60px);
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    align-items: center;
+    gap: 25px;
+    overflow: hidden;
+    border-radius: 28px;
+    background: linear-gradient(120deg, #eee9ff, #e9edff 60%, #fff0f5);
+    animation: fadeUp .7s ease both;
+}
+
+.eyebrow, .section-label {
+    color: var(--primary);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+}
+
+.hero h1 {
+    font-size: clamp(30px, 4vw, 52px);
+    line-height: 1.17;
+    letter-spacing: -1.5px;
+    margin: 17px 0;
+}
+
+.hero h1 span {
+    color: var(--primary);
+}
+
+.hero p {
+    color: #6e6d83;
+    font-size: 13px;
+    line-height: 1.9;
+    max-width: 490px;
+}
+
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 19px;
+    border-radius: 11px;
+    font-size: 11px;
+    font-weight: 600;
+    transition: .25s;
+}
+
+.btn-primary {
+    color: white;
+    background: var(--primary);
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-3px);
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--text);
+    border: 1px solid #e5e0ff;
+}
+
+.hero-note {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 24px;
+    color: #6e6d83;
+    font-size: 10px;
+}
+
+.dot {
+    height: 8px;
+    width: 8px;
+    background: #18b97b;
+    border-radius: 50%;
+    box-shadow: 0 0 0 5px #18b97b20;
+}
+
+.hero-art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 240px;
+}
+
+.art-circle {
+    position: absolute;
+    width: min(270px, 90%);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: linear-gradient(140deg, #c7b7ff, #e8e2ff);
+}
+
+.bag {
+    position: relative;
+    font-size: clamp(90px, 12vw, 145px);
+    filter: drop-shadow(0 20px 15px #5235d52b);
+    animation: float 4s ease-in-out infinite;
+}
+
+.floating {
+    position: absolute;
+    z-index: 2;
+    padding: 12px 15px;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 10px 30px #33305a12;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.float-one {
+    top: 20px;
+    right: 0;
+}
+
+.float-two {
+    bottom: 20px;
+    left: 0;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-12px) rotate(3deg); }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Statistics */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin: 24px 0 40px;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 21px 17px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    transition: .25s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px #28204b0c;
+}
+
+.stat-icon {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    border-radius: 13px;
+    font-size: 20px;
+}
+
+.purple { color: #704cf5; background: #eee8ff; }
+.green { color: #169b6a; background: #e2f8ed; }
+.orange { color: #d6811b; background: #fff0da; }
+.blue { color: #3b82dc; background: #e4efff; }
+
+.stat-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.stat-card h2 {
+    font-size: 21px;
+    margin: 5px 0;
+}
+
+.stat-card small {
+    font-size: 9px;
+    color: var(--muted);
+}
+
+/* Sections */
+
+.section {
+    margin: 40px 0;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.section-heading h2 {
+    margin: 7px 0;
+    font-size: clamp(22px, 3vw, 29px);
+    letter-spacing: -.6px;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.text-link {
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Categories */
+
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.category-chip {
+    padding: 10px 16px;
+    border-radius: 30px;
+    background: white;
+    color: #66657b;
+    border: 1px solid var(--border);
+    font-size: 11px;
+    transition: .2s;
+}
+
+.category-chip:hover,
+.category-chip.active {
+    color: white;
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Search */
+
+.search-form {
+    display: flex;
+    align-items: center;
+    width: min(100%, 310px);
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 5px;
+}
+
+.search-form input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    padding: 9px;
+    font-size: 11px;
+    background: transparent;
+}
+
+.search-form button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    font-size: 20px;
+}
+
+/* Products */
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 19px;
+}
+
+.product-card {
+    overflow: hidden;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    min-width: 0;
+    transition: .3s;
+    animation: fadeUp .5s ease both;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px #30275b12;
+}
+
+.product-image {
+    height: 205px;
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: #f0eff8;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .4s;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.06);
+}
+
+.placeholder {
+    font-size: 55px;
+}
+
+.badge {
+    position: absolute;
+    top: 11px;
+    left: 11px;
+    padding: 6px 9px;
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 700;
+    color: #138451;
+    background: #e1f8eb;
+}
+
+.badge.low {
+    color: #a76911;
+    background: #fff0d7;
+}
+
+.badge.out {
+    color: #b52f46;
+    background: #ffe4e8;
+}
+
+.product-info {
+    padding: 16px;
+}
+
+.product-category {
+    color: var(--primary);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    font-weight: 700;
+}
+
+.product-info h3 {
+    font-size: 13px;
+    margin: 8px 0 17px;
+    overflow-wrap: anywhere;
+}
+
+.product-bottom {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.price-label {
+    display: block;
+    color: var(--muted);
+    font-size: 9px;
+    margin-bottom: 3px;
+}
+
+.price {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.stock {
+    font-size: 9px;
+    color: var(--muted);
+}
+
+.product-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: none;
+    border-radius: 9px;
+    padding: 11px;
+    background: #f0edff;
+    color: var(--primary);
+    font-size: 10px;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.product-link {
+    text-decoration: none;
+}
+
+.product-btn:hover:not(:disabled) {
+    background: var(--primary);
+    color: white;
+}
+
+.product-btn:disabled {
+    cursor: not-allowed;
+    color: #999;
+    background: #f0f0f4;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 45px 15px;
+    background: white;
+    border-radius: 17px;
+}
+
+.empty-state .emoji {
+    font-size: 42px;
+}
+
+.empty-state h3 {
+    margin-bottom: 7px;
+}
+
+.empty-state p {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* Promotion */
+
+.promo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 32px;
+    color: white;
+    border-radius: 22px;
+    background: linear-gradient(110deg, #34206c, #704cf5);
+}
+
+.promo .section-label {
+    color: #d8ceff;
+}
+
+.promo h2 {
+    font-size: clamp(21px, 3vw, 29px);
+    margin: 10px 0;
+}
+
+.promo p {
+    font-size: 11px;
+    line-height: 1.8;
+    color: #e1dcff;
+}
+
+.promo a {
+    padding: 13px 18px;
+    color: var(--primary);
+    background: white;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.promo a:hover {
+    transform: translateY(-3px);
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 22px 0 5px;
+    margin-top: 32px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 10px;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-art { min-height: 205px; }
+    .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .product-image { height: 165px; }
+}
+
+@media (max-width: 480px) {
+    .dashboard { padding: 15px 10px; }
+    .hero { padding: 23px 17px; border-radius: 20px; }
+    .stats { gap: 9px; }
+    .stat-card { padding: 12px 9px; gap: 8px; }
+    .stat-icon { width: 34px; height: 34px; font-size: 16px; }
+    .stat-card h2 { font-size: 17px; }
+    .stat-card p { font-size: 9px; }
+    .product-grid { gap: 9px; }
+    .product-image { height: 130px; }
+    .product-info { padding: 11px; }
+    .product-info h3 { font-size: 12px; }
+    .price { font-size: 16px; }
+    .stock { font-size: 8px; }
+    .promo { padding: 23px 17px; }
+}
+</style>
+</head>
+
+<body>
+   {% include "home.html" %}
+
+<main class="dashboard">
+
+    <section class="hero">
+        <div>
+            <span class="eyebrow">YOUR EVERYDAY SHOPPING DESTINATION</span>
+            <h1>Discover products.<br><span>Love every purchase.</span></h1>
+            <p>Explore your favorites, discover something new, and find products that make everyday life better.</p>
+
+            <div class="hero-buttons">
+                <a href="#products" class="btn-primary">Explore Products ↗</a>
+                <a href="#categories" class="btn-secondary">Browse Categories</a>
+            </div>
+
+            <div class="hero-note">
+                <span class="dot"></span>
+                {{ available_products }} products currently in stock
+            </div>
+        </div>
+
+        <div class="hero-art">
+            <div class="art-circle"></div>
+            <div class="floating float-one">✦ Quality picks</div>
+            <div class="bag">🛍️</div>
+            <div class="floating float-two">♡ Find your favorites</div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <article class="stat-card">
+            <div class="stat-icon purple">▦</div>
+            <div>
+                <p>Total Products</p>
+                <h2>{{ total_products }}</h2>
+                <small>Across your store</small>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon green">✓</div>
+            <div>
+                <p>Available</p>
+                <h2>{{ available_products }}</h2>
+                <small>Ready to explore</small>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon orange">!</div>
+            <div>
+                <p>Low Stock</p>
+                <h2>{{ low_stock }}</h2>
+                <small>Five units or fewer</small>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon blue">♡</div>
+            <div>
+                <p>Categories</p>
+                <h2>{{ categories|length }}</h2>
+                <small>To discover</small>
+            </div>
+        </article>
+    </section>
+
+    <section class="section" id="categories">
+        <div class="section-heading">
+            <div>
+                <span class="section-label">EXPLORE THE STORE</span>
+                <h2>Shop by category</h2>
+            </div>
+            <a href="{% url 'home' %}" class="text-link">View all ↗</a>
+        </div>
+
+        <div class="categories">
+            <a href="{% url 'home' %}"
+               class="category-chip {% if not selected_category %}active{% endif %}">
+                ✨ All Products
+            </a>
+
+            {% for category in categories %}
+            <a href="{% url 'home' %}?category={{ category.name|urlencode }}#products"
+               class="category-chip {% if selected_category == category.name %}active{% endif %}">
+                ◈ {{ category.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="section" id="products">
+        <div class="section-heading">
+            <div>
+                <span class="section-label">HANDPICKED FOR YOU</span>
+                <h2>
+                    {% if search_query %}
+                        Search Results
+                    {% elif selected_category %}
+                        {{ selected_category }}
+                    {% else %}
+                        Explore Products
+                    {% endif %}
+                </h2>
+                <p class="muted">{{ products|length }} products shown</p>
+            </div>
+
+            <form class="search-form" method="GET" action="{% url 'home' %}">
+                <input type="search" name="q"
+                       value="{{ search_query }}"
+                       placeholder="Search products..."
+                       aria-label="Search products">
+                {% if selected_category %}
+                <input type="hidden" name="category" value="{{ selected_category }}">
+                {% endif %}
+                <button type="submit" aria-label="Search">⌕</button>
+            </form>
+        </div>
+
+        <div class="product-grid">
+            {% for product in products %}
+            <article class="product-card">
+                <div class="product-image">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}"
+                         alt="{{ product.name }}"
+                         loading="lazy">
+                    {% else %}
+                    <div class="placeholder">🛍️</div>
+                    {% endif %}
+
+                    {% if product.stock == 0 %}
+                    <span class="badge out">Out of stock</span>
+                    {% elif product.stock <= 5 %}
+                    <span class="badge low">Almost gone</span>
+                    {% else %}
+                    <span class="badge">Available</span>
+                    {% endif %}
+                </div>
+
+                <div class="product-info">
+                        <span class="product-category">{{ product.category.name }}</span>
+                        <h3>{{ product.name }}</h3>
+
+                    <div class="product-bottom">
+                        <div>
+                            <span class="price-label">Price</span>
+                            <span class="price">₹{{ product.price }}</span>
+                        </div>
+                        <span class="stock">{{ product.stock }} left</span>
+                    </div>
+
+                    <a class="product-btn product-link"
+                       href="{% url 'product_detail' product.pk %}">
+                        View product ↗
+                    </a>
+                </div>
+            </article>
+            {% empty %}
+            <div class="empty-state">
+                <div class="emoji">🔎</div>
+                <h3>No products found</h3>
+                <p>Try another search or browse all products.</p>
+                <a href="{% url 'home' %}" class="btn-primary">Show all products</a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="promo">
+        <div>
+            <span class="section-label">A BETTER SHOPPING EXPERIENCE</span>
+            <h2>Your next favorite is waiting.</h2>
+            <p>Browse the collection and discover something you'll love.</p>
+        </div>
+        <a href="#products">Start Exploring →</a>
+    </section>
+
+    <footer class="footer">
+        <span>© 2026 ShopEase</span>
+        <span>Thoughtful shopping, made simple.</span>
+    </footer>
+
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Product button interaction
+    document.querySelectorAll(".product-btn[data-product]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const productName = button.dataset.product;
+            alert(
+                "You selected: " + productName +
+                "\n\nConnect this button to your Django product detail page."
+            );
+        });
+    });
+
+    // Smooth scrolling for internal dashboard links
+    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+        link.addEventListener("click", function (event) {
+            const target = document.querySelector(link.getAttribute("href"));
+
+            if (target) {
+                event.preventDefault();
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>

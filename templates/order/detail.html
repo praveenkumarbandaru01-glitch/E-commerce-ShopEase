@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order #{{ order.pk }} | ShopEase</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { min-height: 100vh; background: #f7f7fc; color: #25243a; font-family: 'Poppins', sans-serif; }
+        .order-page { width: min(100% - 36px, 940px); margin: 38px auto 60px; }
+        .order-heading { margin-bottom: 22px; }
+        .order-heading span { color: #704cf5; font-size: 10px; font-weight: 700; letter-spacing: 1.3px; }
+        .order-heading h1 { margin: 6px 0; font-size: clamp(26px, 4vw, 34px); }
+        .order-heading p { color: #85859b; font-size: 12px; }
+        .order-success { margin-bottom: 16px; padding: 13px 16px; border-radius: 10px; color: #176b42; background: #e8f8ef; font-size: 12px; }
+        .order-panel { margin-bottom: 16px; padding: clamp(18px, 4vw, 28px); border: 1px solid #ececf4; border-radius: 15px; background: #fff; }
+        .order-panel h2 { margin-bottom: 16px; font-size: 16px; }
+        .tracking-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+        .tracking-step { position: relative; padding-top: 23px; color: #a0a0b0; font-size: 9px; text-align: center; }
+        .tracking-step::before { content: ""; position: absolute; top: 0; left: 50%; width: 12px; height: 12px; border: 2px solid #dedbe9; border-radius: 50%; background: #fff; transform: translateX(-50%); }
+        .tracking-step.done { color: #5140b7; font-weight: 600; }
+        .tracking-step.done::before { border-color: #704cf5; background: #704cf5; box-shadow: inset 0 0 0 3px #fff; }
+        .tracking-cancelled { padding: 12px; border-radius: 9px; color: #a5263b; background: #fff0f2; font-size: 12px; }
+        .order-details { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .detail-label { display: block; margin-bottom: 5px; color: #85859b; font-size: 10px; }
+        .detail-value { font-size: 12px; line-height: 1.7; white-space: pre-line; overflow-wrap: anywhere; }
+        .ordered-item { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0eff5; font-size: 11px; }
+        .ordered-item span { color: #737287; }
+        .order-total { display: flex; justify-content: space-between; padding-top: 15px; font-size: 14px; font-weight: 700; }
+        .order-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .order-actions a, .order-actions button { display: inline-flex; justify-content: center; align-items: center; min-height: 40px; padding: 0 14px; border: 0; border-radius: 9px; color: #704cf5; background: #f0edff; font: inherit; font-size: 10px; font-weight: 600; text-decoration: none; cursor: pointer; }
+        .order-actions button { color: #b52f46; background: #fff0f2; }
+        @media (max-width: 620px) { .tracking-step { font-size: 8px; } .order-details { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    {% include "home.html" %}
+    <main class="order-page">
+        <header class="order-heading">
+            <span>ORDER TRACKING</span>
+            <h1>Order #{{ order.pk }}</h1>
+            <p>Placed {{ order.created_at|date:"M j, Y, g:i a" }}</p>
+        </header>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="order-success" role="status">{{ message }}</div>
+            {% endfor %}
+        {% elif order.status == "placed" %}
+        <div class="order-success" role="status">Thank you! Your order has been placed successfully.</div>
+        {% endif %}
+
+        <section class="order-panel">
+            <h2>Delivery progress · {{ order.get_status_display }}</h2>
+            {% if is_cancelled %}
+            <p class="tracking-cancelled">This order was cancelled. Restocked items are available in the store.</p>
+            {% else %}
+            <div class="tracking-steps" aria-label="Order progress">
+                {% for step in tracking_steps %}
+                    <div class="tracking-step {% if step.completed %}done{% endif %}">{{ step.label }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+
+        <section class="order-panel">
+            <h2>Order information</h2>
+            <div class="order-details">
+                <div><span class="detail-label">Delivery address</span><div class="detail-value">{{ order.shipping_address }}</div></div>
+                <div><span class="detail-label">Payment method</span><div class="detail-value">{{ order.get_payment_method_display }}<br>{{ order.get_payment_status_display }}</div></div>
+            </div>
+        </section>
+
+        <section class="order-panel">
+            <h2>Items</h2>
+            {% for item in order.items.all %}
+            <div class="ordered-item">
+                <span>{{ item.product_name }} × {{ item.quantity }} · ₹{{ item.unit_price }} each</span>
+                <strong>₹{{ item.line_total }}</strong>
+            </div>
+            {% endfor %}
+            <div class="order-total"><span>Total due on delivery</span><strong>₹{{ order.total }}</strong></div>
+            <div class="order-actions">
+                <a href="{% url 'order_history' %}">All orders</a>
+                <a href="{% url 'dashboard' %}">Continue shopping</a>
+                {% if order.status == "placed" or order.status == "confirmed" %}
+                <form method="post" action="{% url 'cancel_order' order.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">Cancel order</button>
+                </form>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>

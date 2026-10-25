@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sign Up | Create Account</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .signup-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 35px 32px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.7s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .icon {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eeeaff;
+            color: #764ba2;
+            font-size: 30px;
+            border-radius: 50%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #292541;
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #ddd;
+            border-radius: 9px;
+            outline: none;
+            background: #fafafa;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #764ba2;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.12);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 65px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #764ba2;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(118, 75, 162, 0.3);
+        }
+
+        .messages,
+        .error-box {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 7px;
+            background: #fff0f0;
+            color: #c62828;
+            font-size: 13px;
+        }
+
+        .errorlist {
+            margin: 7px 0 0;
+            padding-left: 18px;
+            color: #c62828;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        .helptext {
+            display: block;
+            margin-top: 7px;
+            color: #777;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .login-link {
+            margin-top: 22px;
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #764ba2;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 22px;
+            text-align: center;
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 28px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="signup-container">
+
+        <div class="icon">👤</div>
+
+        <h2>Create Account</h2>
+        <p class="subtitle">Join us by creating your account</p>
+
+        {% if form.non_field_errors %}
+            <div class="error-box">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="post">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button class="signup-btn" type="submit">
+        Register
+    </button>
+</form>
+
+
+        <p class="login-link">
+            Already have an account?
+            <a href="{% url 'login' %}">Login</a>
+        </p>
+
+        <p class="footer">
+            &copy; 2026 My Account. All rights reserved.
+        </p>
+
+    </div>
+
+    <script>
+        function togglePassword(id, button) {
+            const passwordInput = document.getElementById(id);
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                button.textContent = 'Hide';
+            } else {
+                passwordInput.type = 'password';
+                button.textContent = 'Show';
+            }
+        }
+    </script>
+
+</body>
+</html>

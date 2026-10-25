@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | ShopEase</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { min-height: 100vh; background: #f7f7fc; color: #25243a; font-family: 'Poppins', sans-serif; }
+        .orders-page { width: min(100% - 36px, 1000px); margin: 38px auto 60px; }
+        .orders-heading { margin-bottom: 22px; }
+        .orders-heading span { color: #704cf5; font-size: 10px; font-weight: 700; letter-spacing: 1.3px; }
+        .orders-heading h1 { margin: 6px 0; font-size: clamp(26px, 4vw, 34px); }
+        .orders-heading p { color: #85859b; font-size: 12px; }
+        .order-list { display: grid; gap: 14px; }
+        .order-card { padding: 20px; border: 1px solid #ececf4; border-radius: 14px; background: #fff; }
+        .order-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+        .order-top h2 { font-size: 15px; }
+        .order-top p, .order-meta { color: #85859b; font-size: 10px; }
+        .order-status { padding: 6px 10px; border-radius: 20px; color: #704cf5; background: #f0edff; font-size: 9px; font-weight: 700; white-space: nowrap; }
+        .order-summary { display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #f0eff5; font-size: 11px; }
+        .order-summary span { color: #737287; }
+        .order-view { display: inline-flex; margin-top: 12px; color: #704cf5; font-size: 10px; font-weight: 600; text-decoration: none; }
+        .orders-empty { padding: 48px 20px; text-align: center; border: 1px solid #ececf4; border-radius: 15px; background: #fff; }
+        .orders-empty span { font-size: 42px; }
+        .orders-empty h2 { margin: 10px 0 6px; }
+        .orders-empty p { margin-bottom: 18px; color: #85859b; font-size: 12px; }
+        .orders-empty a { display: inline-flex; padding: 12px 18px; border-radius: 9px; color: #fff; background: #704cf5; font-size: 11px; font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+    {% include "home.html" %}
+    <main class="orders-page">
+        <header class="orders-heading">
+            <span>YOUR SHOPPING JOURNEY</span>
+            <h1>My orders</h1>
+            <p>Review your orders and follow their delivery status.</p>
+        </header>
+
+        {% if orders %}
+        <section class="order-list" aria-label="Order history">
+            {% for order in orders %}
+            <article class="order-card">
+                <div class="order-top">
+                    <div>
+                        <h2>Order #{{ order.pk }}</h2>
+                        <p>Placed {{ order.created_at|date:"M j, Y, g:i a" }}</p>
+                    </div>
+                    <span class="order-status">{{ order.get_status_display }}</span>
+                </div>
+                <div class="order-summary">
+                    <span>{{ order.items.count }} item{{ order.items.count|pluralize }} · {{ order.get_payment_method_display }}</span>
+                    <strong>₹{{ order.total }}</strong>
+                </div>
+                <a class="order-view" href="{% url 'order_detail' order.pk %}">View order and tracking →</a>
+            </article>
+            {% endfor %}
+        </section>
+        {% else %}
+        <section class="orders-empty">
+            <span aria-hidden="true">📦</span>
+            <h2>No orders yet</h2>
+            <p>Your completed checkouts will appear here.</p>
+            <a href="{% url 'dashboard' %}">Explore products</a>
+        </section>
+        {% endif %}
+    </main>
+</body>
+</html>
